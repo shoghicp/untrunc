@@ -672,8 +672,10 @@ bool Mp4::repair(string corrupt_filename) {
 			Track &track = tracks[i];
 			clog << "Track " << i << " codec: " << track.codec.name << '\n';
 			// Sometime audio packets are difficult to match, but if they are the only ones....
-			if(tracks.size() > 1 && !track.codec.matchSample(start, maxlength))
+			if(tracks.size() > 1 && !track.codec.matchSample(start, maxlength)){
+				cout << 'tracks.size() > 1 && !track.codec.matchSample(start, maxlength)\n';
 				continue;
+			}
 			int duration = 0;
 			int length   = track.codec.getLength(start, maxlength, duration);
 			if(length < -1 || length > MaxFrameLength) {
@@ -681,10 +683,13 @@ bool Mp4::repair(string corrupt_filename) {
 				continue;
 			}
 			if(length == -1 || length == 0) {
+				cout << 'length == -1 || length == 0\n';
 				continue;
 			}
-			if(length >= maxlength)
+			if(length >= maxlength){
+				cout << 'length >= maxlength\n';
 				continue;
+			}
 #ifdef VERBOSE1
 			if(length > 8)
 				clog << "Length: " << length << " found as: " << track.codec.name << '\n';
@@ -707,6 +712,7 @@ bool Mp4::repair(string corrupt_filename) {
 #endif
 
 		if(!found) {
+			cout << '!found\n';
 			// This could be a problem for large files.
 			//assert(mdat->contentSize() + 8 == mdat->length);
 			mdat->file_end = mdat->file_begin + offset;
